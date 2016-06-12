@@ -12,7 +12,7 @@ export class FirebaseService {
     constructor() {
         // Initialize Firebase
         var config = {
-            apiKey: "your-key",
+            apiKey: "AIzaSyDKSySssQO5ne689wcPd6mCzsLAsXG0E3g",
             authDomain: "clearlyinnovative-firebasestarterapp.firebaseapp.com",
             databaseURL: "https://clearlyinnovative-firebasestarterapp.firebaseio.com",
             storageBucket: "clearlyinnovative-firebasestar.appspot.com",
@@ -31,13 +31,26 @@ export class FirebaseService {
     }
 
     currentUser() {
-        return firebase.auth.currentUser
+        return firebase.auth().currentUser
     }
 
     logout() {
         return firebase.auth().signOut()
     }
 
+    createEmailUser(credentials) {
+
+        return new Observable(observer => {
+            return firebase.auth().createUserWithEmailAndPassword(credentials.email, credentials.password)
+                .then( (authData) => {
+                    console.log("User created successfully with payload-", authData);
+                    observer.next(authData)
+                }).catch( (_error) => {
+                    console.log("Login Failed!", _error);
+                    observer.error(_error)
+                })
+        });
+    }
     login(credentials) {
         var that = this
 

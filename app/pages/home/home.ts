@@ -21,6 +21,9 @@ export class HomePage implements OnInit, OnDestroy {
     console.log("onPageLoaded")
     if (!this.FBService.currentUser()) {
       this.displayLogin(() => {
+
+        this.authInfo = this.FBService.currentUser()
+
         this.loadData()
       })
     }

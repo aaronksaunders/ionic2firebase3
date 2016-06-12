@@ -8,10 +8,10 @@ import {FirebaseService} from '../../lib/firebaseService'
 export class LoginPage {
 
   error: any
-  auth:any
+  auth: any
 
   constructor(public FBService: FirebaseService,
-    public viewCtrl: ViewController, public _nav : NavController) { }
+    public viewCtrl: ViewController, public _nav: NavController) { }
   /** 
    * this will dismiss the modal page
    */
@@ -32,17 +32,15 @@ export class LoginPage {
   registerUser(_credentials, _event) {
     _event.preventDefault();
 
-    this.auth.createUser(_credentials).then((authData: FirebaseAuthData) => {
-      console.log(authData)
-
-      _credentials.created = true;
-
-      return this.login(_credentials, _event);
-
-    }).catch((error) => {
-      this.error = error
-      console.log(error)
-    });
+    this.FBService.createEmailUser(_credentials).subscribe(
+      (data: any) => {
+        console.log("the data", data.email)
+        this.dismiss()
+      },
+      (error) => {
+        alert("Error Logging In: " + error.message)
+        console.log(error)
+      });
   }
 
   /**
@@ -73,6 +71,7 @@ export class LoginPage {
 
       },
       (error) => {
+        alert("Error Logging In: " + error.message)
         console.log(error)
       });
   }
