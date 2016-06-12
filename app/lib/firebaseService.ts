@@ -12,7 +12,7 @@ export class FirebaseService {
     constructor() {
         // Initialize Firebase
         var config = {
-            apiKey: "AIzaSyDKSySssQO5ne689wcPd6mCzsLAsXG0E3g",
+            apiKey: "your-key",
             authDomain: "clearlyinnovative-firebasestarterapp.firebaseapp.com",
             databaseURL: "https://clearlyinnovative-firebasestarterapp.firebaseio.com",
             storageBucket: "clearlyinnovative-firebasestar.appspot.com",
