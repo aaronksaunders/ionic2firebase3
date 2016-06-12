@@ -36,3 +36,6 @@ export class FirebaseService {
         };
         firebase.initializeApp(config);
 ```
+
+##Other Ionic2 Project Repos
+Integrating ionic2 Google Maps Native Plugin](https://github.com/aaronksaunders/ionic2GMapNative)
