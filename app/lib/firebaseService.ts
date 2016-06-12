@@ -1,6 +1,8 @@
 import {Injectable} from '@angular/core';
 import 'rxjs/Rx';
 import {Observable} from "rxjs/Observable";
+
+
 //import * as firebase from "firebase";
 declare var firebase: any;
 
@@ -31,9 +33,9 @@ export class FirebaseService {
     currentUser() {
         return firebase.auth.currentUser
     }
-    
+
     logout() {
-        firebase.auth().signOut()
+        return firebase.auth().signOut()
     }
 
     login(credentials) {

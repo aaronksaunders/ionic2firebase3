@@ -8,14 +8,15 @@ import {FirebaseService} from '../../lib/firebaseService'
 export class LoginPage {
 
   error: any
+  auth:any
 
   constructor(public FBService: FirebaseService,
-    public viewCtrl: ViewController) { }
+    public viewCtrl: ViewController, public _nav : NavController) { }
   /** 
    * this will dismiss the modal page
    */
   dismiss() {
-    this.viewCtrl.dismiss();
+    this._nav.popToRoot();
     this.viewCtrl.data.cb()
   }
 

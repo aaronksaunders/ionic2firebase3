@@ -1,16 +1,15 @@
-<ion-navbar *navbar>
+<ion-navbar *navbar hideBackButton="true">
     <ion-title>
         Angular Fire Test App
     </ion-title>
 </ion-navbar>
-<ion-content padding>
+<ion-content padding style="background:#040">
     <h1>User Login</h1>
     <form #loginCreds="ngForm">
         <ion-item>
             <ion-label>Username</ion-label>
             <ion-input type="text" ngControl="email"></ion-input>
         </ion-item>
-
         <ion-item>
             <ion-label>Password</ion-label>
             <ion-input type="password" ngControl="password"></ion-input>

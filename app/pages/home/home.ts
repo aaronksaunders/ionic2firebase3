@@ -13,11 +13,29 @@ export class HomePage implements OnInit, OnDestroy {
   activeUser: String
 
   constructor(private _navController: NavController, public FBService: FirebaseService) {
+
+
+  }
+
+  onPageLoaded() {
+    console.log("onPageLoaded")
+    if (!this.FBService.currentUser()) {
+      this.displayLogin(() => {
+        this.loadData()
+      })
+    }
   }
 
   doLogout() {
-    this.FBService.logout()
-    this.activeUser = null
+    this.FBService.logout().then(() => {
+      // Sign-out successful.
+      this.activeUser = null
+      this._navController.push(LoginPage)
+    }, function (error) {
+      // An error happened.
+      alert(error)
+    });
+
   }
 
   ngOnDestroy() {
@@ -26,18 +44,13 @@ export class HomePage implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log('ngOnInit');
-    if (!this.FBService.currentUser()) {
-      this.displayLogin(()=>{
-        this.loadData()
-      })
-    }
+
   }
   /**
    * displays the login window
    */
   displayLogin(_callback) {
-    let loginPage = Modal.create(LoginPage,{cb:_callback});
-    this._navController.present(loginPage);
+    this._navController.push(LoginPage, { cb: _callback });
   }
 
   loadData() {
