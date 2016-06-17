@@ -79,19 +79,37 @@ export class FirebaseService {
 
 
         return new Observable(observer => {
-            var uploadTask = firebase.storage().ref('images/sample.jpg').put(_imageData);
+            var fileRef = firebase.storage().ref('images/sample.jpg')
+            var uploadTask = fileRef.put(_imageData);
 
             uploadTask.on('state_changed', function (snapshot) {
                 console.log('state_changed', snapshot);
                 _progress && _progress(snapshot)
             }, function (error) {
                 console.log(JSON.stringify(error));
-                 observer.error(error)
+                observer.error(error)
             }, function () {
                 // Handle successful uploads on complete
                 // For instance, get the download URL: https://firebasestorage.googleapis.com/...
                 var downloadURL = uploadTask.snapshot.downloadURL;
-                observer.next(uploadTask)
+
+                // Metadata now contains the metadata for file
+                fileRef.getMetadata().then(function (_metadata) {
+
+                    // save a reference to the image for listing purposes
+                    var ref = firebase.database().ref('images');
+                    ref.push({
+                        'imageURL': downloadURL,
+                        'owner': firebase.auth().currentUser.uid,
+                        'when': new Date().getTime(),
+                        //'meta': _metadata
+                    });
+                    observer.next(uploadTask)
+                }).catch(function (error) {
+                    // Uh-oh, an error occurred!
+                    observer.error(error)
+                });
+
             });
         });
     }

@@ -88,7 +88,7 @@ export class HomePage implements OnInit, OnDestroy {
               },
               (error) => {
                 console.log(error)
-                Toast.show("File Error" + error, "1000", "center").subscribe(
+                Toast.show("File Error" + error, "5000", "center").subscribe(
                   toast => {
                     console.log(toast);
                   }
