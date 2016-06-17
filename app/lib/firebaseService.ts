@@ -9,23 +9,32 @@ declare var firebase: any;
 @Injectable()
 export class FirebaseService {
 
+    authCallback: any;
+
     constructor() {
         // Initialize Firebase
         var config = {
-            apiKey: "your-key",
-            authDomain: "clearlyinnovative-firebasestarterapp.firebaseapp.com",
-            databaseURL: "https://clearlyinnovative-firebasestarterapp.firebaseio.com",
-            storageBucket: "clearlyinnovative-firebasestar.appspot.com",
+            apiKey: "AIzaSyCk6N39ZJkb-gM2EBTg2fSiwbvk9Lm0VUs",
+            authDomain: "newfirebaseapp-2ee6f.firebaseapp.com",
+            databaseURL: "https://newfirebaseapp-2ee6f.firebaseio.com",
+            storageBucket: "newfirebaseapp-2ee6f.appspot.com",
+
         };
         firebase.initializeApp(config);
 
         // check for changes in auth status
 
-        firebase.auth().onAuthStateChanged((_currentUser) => {
+
+    }
+
+    onAuthStateChanged(_function) {
+        return firebase.auth().onAuthStateChanged((_currentUser) => {
             if (_currentUser) {
                 console.log("User " + _currentUser.uid + " is logged in with " + _currentUser.provider);
+                _function(_currentUser);
             } else {
                 console.log("User is logged out");
+                _function(null)
             }
         })
     }
@@ -42,10 +51,10 @@ export class FirebaseService {
 
         return new Observable(observer => {
             return firebase.auth().createUserWithEmailAndPassword(credentials.email, credentials.password)
-                .then( (authData) => {
+                .then((authData) => {
                     console.log("User created successfully with payload-", authData);
                     observer.next(authData)
-                }).catch( (_error) => {
+                }).catch((_error) => {
                     console.log("Login Failed!", _error);
                     observer.error(_error)
                 })
@@ -63,6 +72,27 @@ export class FirebaseService {
                     console.log("Login Failed!", _error);
                     observer.error(_error)
                 })
+        });
+    }
+
+    uploadPhotoFromFile(_imageData, _progress) {
+
+
+        return new Observable(observer => {
+            var uploadTask = firebase.storage().ref('images/sample.jpg').put(_imageData);
+
+            uploadTask.on('state_changed', function (snapshot) {
+                console.log('state_changed', snapshot);
+                _progress && _progress(snapshot)
+            }, function (error) {
+                console.log(JSON.stringify(error));
+                 observer.error(error)
+            }, function () {
+                // Handle successful uploads on complete
+                // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                var downloadURL = uploadTask.snapshot.downloadURL;
+                observer.next(uploadTask)
+            });
         });
     }
 
