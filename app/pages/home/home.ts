@@ -154,6 +154,7 @@ export class HomePage implements OnInit, OnDestroy {
 
     }, (err) => {
       console.log(err);
+      alert(err)
     });
   }
 

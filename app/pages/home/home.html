@@ -2,6 +2,12 @@
   <ion-title>
     Home
   </ion-title>
+  <ion-buttons end>
+    <button (click)="doLogout()">
+            <ion-icon name="contact"></ion-icon>
+            Logout
+        </button>
+  </ion-buttons>
 </ion-navbar>
 
 <ion-content class="home">
@@ -10,8 +16,7 @@
       <ion-col width-80 style="margin-top:8px">
         <div *ngIf="authInfo">You are logged in as {{authInfo.email}}</div>
         <div *ngIf="progress !== 0">
-          <progress [(value)]="progress" max="100"></progress>
-          <span>Progress: {{progress}}%</span>
+          <progress [(value)]="progress" max="100" width='100%'></progress>
         </div>
       </ion-col>
       <ion-col width-20>
@@ -19,20 +24,16 @@
       </ion-col>
     </ion-row>
   </ion-item>
-  <h3 padding>Active User: {{activeUser}}</h3>
-  <button (click)="doLogout()">Logout</button>
+
   <ion-card *ngFor="let item of items">
     <ion-card-header>
-      {{item.title}}
+      <h2>{{item.owner}}</h2>
+      <h3> {{item.when}}</h3>
     </ion-card-header>
     <ion-card-content>
-      {{item.description}}
+      <div class="blockUIParent">
+        <img src="{{item.thumb}}" class="blockUIimg" />
+      </div>
     </ion-card-content>
   </ion-card>
-  <ion-card>
-    <div class="blockUIParent">
-      <img src="{{currentImage}}" class="blockUIimg" />
-    </div>
-  </ion-card>
 </ion-content>
-

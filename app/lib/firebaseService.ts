@@ -79,7 +79,8 @@ export class FirebaseService {
 
 
         return new Observable(observer => {
-            var fileRef = firebase.storage().ref('images/sample.jpg')
+            var _time = new Date().getTime()
+            var fileRef = firebase.storage().ref('images/sample-' + _time + '.jpg')
             var uploadTask = fileRef.put(_imageData['blob']);
 
             uploadTask.on('state_changed', function (snapshot) {
@@ -116,7 +117,7 @@ export class FirebaseService {
     }
 
     getDataObs() {
-        var ref = firebase.database().ref('textItems')
+        var ref = firebase.database().ref('images')
         var that = this
 
         return new Observable(observer => {

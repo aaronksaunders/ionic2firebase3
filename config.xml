@@ -11,6 +11,7 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
+    <allow-navigation href="https://newfirebaseapp-2ee6f.firebaseapp.com/*" />
     <platform name="android">
         <allow-intent href="market:*" />
     </platform>
