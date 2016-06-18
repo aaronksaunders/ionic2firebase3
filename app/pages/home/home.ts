@@ -16,6 +16,8 @@ export class HomePage implements OnInit, OnDestroy {
   items = [];
   activeUser: String
   progress: number = 0
+  currentImage
+  images = {}
 
   constructor(private _navController: NavController,
     public FBService: FirebaseService,
@@ -58,6 +60,43 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
 
+  doImageResize(img, callback, MAX_WIDTH: number = 900, MAX_HEIGHT: number = 900) {
+    var canvas = document.createElement("canvas");
+
+    var image = new Image();
+
+    image.onload = function () {
+      console.log("Size Before: " + image.src.length + " bytes");
+
+      var width = image.width;
+      var height = image.height;
+
+      if (width > height) {
+        if (width > MAX_WIDTH) {
+          height *= MAX_WIDTH / width;
+          width = MAX_WIDTH;
+        }
+      } else {
+        if (height > MAX_HEIGHT) {
+          width *= MAX_HEIGHT / height;
+          height = MAX_HEIGHT;
+        }
+      }
+      canvas.width = width;
+      canvas.height = height;
+      var ctx = canvas.getContext("2d");
+
+      ctx.drawImage(image, 0, 0, width, height);
+
+      var dataUrl = canvas.toDataURL('image/jpeg');
+      // IMPORTANT: 'jpeg' NOT 'jpg'
+      console.log("Size After:  " + dataUrl.length + " bytes");
+      callback(dataUrl)
+    }
+
+    image.src = img;
+  }
+
   doTakePicture() {
     Camera.getPicture({
       destinationType: Camera.DestinationType.FILE_URI,
@@ -65,6 +104,13 @@ export class HomePage implements OnInit, OnDestroy {
       targetWidth: 640
     }).then((imageData) => {
       // imageData is a file path
+
+      this.doImageResize(imageData, (_data) => {
+        this.ngZone.run(() => {
+          this.currentImage = _data
+          this.images['thumb'] = _data
+        })
+      }, 640)
 
       window.resolveLocalFileSystemURL(imageData, (fileEntry) => {
 
@@ -76,7 +122,9 @@ export class HomePage implements OnInit, OnDestroy {
             var imgBlob: any = new Blob([evt.target.result], { type: 'image/jpeg' });
             imgBlob.name = 'sample.jpg';
 
-            this.FBService.uploadPhotoFromFile(imgBlob, this._pictureUploadProgress)
+            this.images['blob'] = imgBlob;
+
+            this.FBService.uploadPhotoFromFile(this.images, this._pictureUploadProgress)
               .subscribe((data) => {
                 console.log(data)
 

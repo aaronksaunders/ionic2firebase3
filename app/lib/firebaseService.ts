@@ -80,7 +80,7 @@ export class FirebaseService {
 
         return new Observable(observer => {
             var fileRef = firebase.storage().ref('images/sample.jpg')
-            var uploadTask = fileRef.put(_imageData);
+            var uploadTask = fileRef.put(_imageData['blob']);
 
             uploadTask.on('state_changed', function (snapshot) {
                 console.log('state_changed', snapshot);
@@ -100,6 +100,7 @@ export class FirebaseService {
                     var ref = firebase.database().ref('images');
                     ref.push({
                         'imageURL': downloadURL,
+                        'thumb' : _imageData['thumb'],
                         'owner': firebase.auth().currentUser.uid,
                         'when': new Date().getTime(),
                         //'meta': _metadata
