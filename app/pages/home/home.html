@@ -25,7 +25,7 @@
     </ion-row>
   </ion-item>
 
-  <ion-card *ngFor="let item of items">
+  <ion-card *ngFor="let item of items | async">
     <ion-card-header>
       <h2>{{item.owner}}</h2>
       <h3> {{item.when}}</h3>

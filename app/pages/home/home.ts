@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy} from "@angular/core";
-import {Modal, NavController} from 'ionic-angular';
+import {Modal, NavController, Platform} from 'ionic-angular';
 import {FirebaseService} from '../../lib/firebaseService'
 import {LoginPage} from '../login/login'
 import {NgZone} from '@angular/core';
@@ -7,13 +7,15 @@ import {NgZone} from '@angular/core';
 // plugin 
 import {Camera, File, Toast} from 'ionic-native';
 
+declare var window: any
+
 @Component({
   templateUrl: 'build/pages/home/home.html'
 })
 export class HomePage implements OnInit, OnDestroy {
 
   authInfo: any = {};
-  items = [];
+  items;
   activeUser: String
   progress: number = 0
   currentImage
@@ -21,6 +23,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   constructor(private _navController: NavController,
     public FBService: FirebaseService,
+    public platform: Platform,
     private ngZone: NgZone) {
   }
 
@@ -101,7 +104,8 @@ export class HomePage implements OnInit, OnDestroy {
     Camera.getPicture({
       destinationType: Camera.DestinationType.FILE_URI,
       sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
-      targetWidth: 640
+      targetWidth: 640,
+      correctOrientation: true
     }).then((imageData) => {
       // imageData is a file path
 
@@ -112,12 +116,17 @@ export class HomePage implements OnInit, OnDestroy {
         })
       }, 640)
 
+      // get the path correct for android devices
+      if (this.platform.is("android")) {
+        imageData = "file://" + imageData
+      }
+
       window.resolveLocalFileSystemURL(imageData, (fileEntry) => {
 
         fileEntry.file((resFile) => {
 
           var reader = new FileReader();
-          reader.onloadend = (evt) => {
+          reader.onloadend = (evt: any) => {
 
             var imgBlob: any = new Blob([evt.target.result], { type: 'image/jpeg' });
             imgBlob.name = 'sample.jpg';
@@ -150,11 +159,14 @@ export class HomePage implements OnInit, OnDestroy {
           reader.readAsArrayBuffer(resFile);
 
         });
+      }, (err) => {
+        console.log(err);
+        alert(JSON.stringify(err))
       });
 
     }, (err) => {
-      console.log(err);
-      alert(err)
+      console.log("resolveLocalFileSystemURL", err);
+      alert(JSON.stringify(err))
     });
   }
 
@@ -191,14 +203,7 @@ export class HomePage implements OnInit, OnDestroy {
   loadData() {
     console.log('loadData');
 
-    this.FBService.getDataObs()
-      .subscribe((data: Array<any>) => {
-        console.log(data)
-        this.items = data
-      },
-      (error) => {
-        console.log(error)
-      });
+    this.items = this.FBService.getDataObs()
   }
 
   /*
